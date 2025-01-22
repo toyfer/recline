@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "organizeImports": {
     "enabled": true
   },
@@ -9,22 +9,64 @@
     "useIgnoreFile": true
   },
   "formatter": {
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "indentWidth": 4,
+    "lineEnding": "lf"
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single"
+      "quoteStyle": "double",
+      "jsxQuoteStyle": "double",
+      "trailingCommas": "none",
+      "semicolons": "always"
+    }
+  },
+  "json": {
+    "formatter": {
+      "indentWidth": 2
     }
   },
   "css": {
+    "formatter": {
+      "indentWidth": 2
+    },
     "parser": {
       "cssModules": true
+    }
+  },
+  "graphql": {
+    "formatter": {
+      "indentWidth": 2
     }
   },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "noDefaultExport": "error",
+        "useDefaultSwitchClause": "error",
+        "useFilenamingConvention": "error",
+        "useForOf": "error",
+        "useNamingConvention": "error",
+        "useThrowOnlyError": "error",
+        "noYodaExpression": "error"
+      },
+      "nursery": {
+        "useExplicitType": "error",
+        "useConsistentMemberAccessibility": {
+          "level": "error",
+          "options": {
+            "accessibility": "explicit"
+          }
+        }
+      },
+      "performance": {
+        "noBarrelFile": "error"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off"
+      }
     }
   }
 }

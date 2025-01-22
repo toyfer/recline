@@ -1,7 +1,41 @@
 {
-  "cSpell.words": [
-    "julesmons",
-    "rsbuild",
-    "rspack"
-  ]
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 4
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 4
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 4
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 4
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 2
+  },
+  "[jsonl]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 2
+  },
+  "[graphql]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 2
+  },
+  "biome.enabled": true,
+  "cSpell.words": ["julesmons", "rsbuild", "rspack"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "editor.formatOnSave": true
 }

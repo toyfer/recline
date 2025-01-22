@@ -8,11 +8,7 @@
     "showLineNumbers": false,
     "copyToClipboard": false
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.css"
-  ],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.css"],
   "ignore": {
     "useGitignore": true,
     "useDefaultPatterns": true,

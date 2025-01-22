@@ -1,0 +1,77 @@
+{
+  "name": "recline",
+  "version": "0.0.1",
+  "publisher": "julesmons",
+  "license": "MPL-2.0",
+  "displayName": "Recline",
+  "description": "The AI assistant that seamlessly integrates with VSCode to autonomously create, edit, and run terminal commands; redefining how you code.",
+  "author": {
+    "name": "Jules Mons",
+    "email": "jules@jupdev.nl",
+    "url": "https://www.julesmons.nl/"
+  },
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "funding": "https://github.com/sponsors/julesmons",
+  "homepage": "https://github.com/julesmons/recline#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julesmons/recline.git"
+  },
+  "bugs": "https://github.com/julesmons/recline/issues",
+  "keywords": [
+    "recline",
+    "AI",
+    "agent",
+    "autonomous",
+    "in-IDE"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "dist/extension.js",
+  "icon": "public/assets/icons/recline.png",
+  "galleryBanner": {
+    "color": "#3B82F6",
+    "theme": "dark"
+  },
+  "files": [
+    "LICENSE",
+    "public",
+    "dist"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "recline.open",
+        "title": "Open chat view"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "rsbuild build",
+    "dev": "rsbuild dev",
+    "preview": "rsbuild preview",
+    "check": "biome check --write",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^1.1.0",
+    "@ai-sdk/openai": "^1.1.0",
+    "@ai-sdk/react": "^1.1.0",
+    "@vscode-elements/elements": "^1.10.0",
+    "ai": "^4.1.0",
+    "preact": "^10.25.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.3",
+    "@rsbuild/core": "^1.1.8",
+    "@rsbuild/plugin-preact": "^1.2.0",
+    "@types/node": "^22.10.7",
+    "@types/vscode": "^1.91.0",
+    "typescript": "^5.7.3"
+  }
+}

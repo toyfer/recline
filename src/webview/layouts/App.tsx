@@ -2,7 +2,7 @@ import React from "react";
 
 export const App: React.FC = () => {
     return (
-        <div className="content">
+        <div className="view">
             <h1>Recline</h1>
             <p>
                 The AI assistant that seamlessly integrates with VSCode to

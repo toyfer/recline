@@ -42,11 +42,14 @@
     "@ai-sdk/anthropic": "^1.1.0",
     "@ai-sdk/openai": "^1.1.0",
     "@ai-sdk/react": "^1.1.0",
-    "@vscode-elements/elements": "^1.10.0",
+    "@vscode-elements/react-elements": "^0.8.0",
     "ai": "^4.1.0",
     "preact": "^10.25.4",
     "zod": "^3.24.1",
-    "@vscode/codicons": "^0.0.36"
+    "@vscode/codicons": "^0.0.36",
+    "preact-markdown": "^2.1.0",
+    "preact-markup": "^2.1.1",
+    "preact-virtual-list": "^0.3.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

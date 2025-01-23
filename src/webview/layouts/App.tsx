@@ -1,14 +1,14 @@
 import React from "react";
+import { MemoryRouter, Route, Routes } from "react-router";
 
-export const App: React.FC = () => {
+import { WelcomeView } from "@webview/views/WelcomeView";
+
+export const App = () => {
     return (
-        <div className="view">
-            <h1>Recline</h1>
-            <p>
-                The AI assistant that seamlessly integrates with VSCode to
-                autonomously create, edit, and run terminal commands; redefining
-                how you code.
-            </p>
-        </div>
+        <MemoryRouter>
+            <Routes>
+                <Route path="/" element={<WelcomeView/>} />
+            </Routes>
+        </MemoryRouter>
     );
 };

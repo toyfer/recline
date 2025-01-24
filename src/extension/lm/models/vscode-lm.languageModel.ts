@@ -174,28 +174,6 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
             // 2. Parse input
             const messages: vscode.LanguageModelChatMessage[] = [];
 
-            //             type LanguageModelV1Prompt = Array<LanguageModelV1Message>;
-            // type LanguageModelV1Message = ({
-            //     role: 'system';
-            //     content: string;
-            // } | {
-            //     role: 'user';
-            //     content: Array<LanguageModelV1TextPart | LanguageModelV1ImagePart | LanguageModelV1FilePart>;
-            // } | {
-            //     role: 'assistant';
-            //     content: Array<LanguageModelV1TextPart | LanguageModelV1ToolCallPart>;
-            // } | {
-            //     role: 'tool';
-            //     content: Array<LanguageModelV1ToolResultPart>;
-            // }) & {
-            //     /**
-            //      * Additional provider-specific metadata. They are passed through
-            //      * to the provider from the AI SDK and enable provider-specific
-            //      * functionality that can be fully encapsulated in the provider.
-            //      */
-            //     providerMetadata?: LanguageModelV1ProviderMetadata;
-            // };
-
             for (const promptMessage of prompt) {
                 switch (promptMessage.role) {
                     case "system":

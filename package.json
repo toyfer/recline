@@ -88,6 +88,11 @@
         "command": "recline.show",
         "title": "Show",
         "category": "Recline"
+      },
+      {
+        "command": "recline.testDrive",
+        "title": "Test Drive",
+        "category": "Recline"
       }
     ]
   }

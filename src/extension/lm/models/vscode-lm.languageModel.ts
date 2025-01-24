@@ -1,14 +1,138 @@
 import { randomUUID } from "node:crypto";
 import { ReadableStream } from "node:stream/web";
+
 import type {
     FinishReason,
     LanguageModel,
+    LanguageModelV1Prompt,
     LanguageModelV1StreamPart,
     ProviderMetadata
 } from "ai";
 import * as vscode from "vscode";
+
+import { createContentBuilder } from "@extension/utils/contentBuilder.util";
+
 import { roughlyEstimateTokenCount } from "../utils/roughlyEstimateTokenCount.util";
 import { streamAsyncIterator } from "../utils/streamAsyncIterator.util";
+
+function handleUnsupportedContent(
+    type: string,
+    mimeType: string,
+    data: unknown
+): vscode.LanguageModelChatMessage[] {
+    const callId: string = randomUUID();
+    return [
+        vscode.LanguageModelChatMessage.Assistant([
+            new vscode.LanguageModelToolCallPart(
+                callId,
+                `load_unsupported_${type}`,
+                { as: mimeType }
+            )
+        ]),
+        vscode.LanguageModelChatMessage.User([
+            {
+                callId,
+                content: [data]
+            } as vscode.LanguageModelToolResultPart
+        ])
+    ];
+}
+
+function convertPrompt(
+    prompt: LanguageModelV1Prompt
+): vscode.LanguageModelChatMessage[] {
+    const messages: vscode.LanguageModelChatMessage[] = [];
+
+    for (const message of prompt) {
+        if (typeof message.content === "string") {
+            messages.push(
+                vscode.LanguageModelChatMessage.User(message.content)
+            );
+            return messages;
+        }
+
+        for (const part of message.content) {
+            switch (part.type) {
+                case "text":
+                    messages.push(
+                        message.role === "assistant"
+                            ? vscode.LanguageModelChatMessage.Assistant(
+                                  part.text
+                              )
+                            : vscode.LanguageModelChatMessage.User(part.text)
+                    );
+                    break;
+
+                case "image":
+                    messages.push(
+                        ...handleUnsupportedContent(
+                            "image",
+                            part.mimeType ?? "image/*",
+                            part.image
+                        )
+                    );
+                    break;
+
+                case "file":
+                    messages.push(
+                        ...handleUnsupportedContent(
+                            "file",
+                            part.mimeType,
+                            part.data
+                        )
+                    );
+                    break;
+
+                case "tool-call":
+                    messages.push(
+                        vscode.LanguageModelChatMessage.Assistant([
+                            new vscode.LanguageModelToolCallPart(
+                                part.toolCallId,
+                                part.toolName,
+                                part.args as object
+                            )
+                        ])
+                    );
+                    break;
+
+                case "tool-result":
+                    const parts: (
+                        | vscode.LanguageModelTextPart
+                        | vscode.LanguageModelPromptTsxPart
+                        | unknown
+                    )[] = [];
+
+                    for (const content of part.content ?? []) {
+                        switch (content.type) {
+                            case "text":
+                                parts.push(
+                                    new vscode.LanguageModelTextPart(
+                                        content.text
+                                    )
+                                );
+                                break;
+
+                            case "image":
+                                parts.push(content.data);
+                                break;
+                        }
+                    }
+
+                    messages.push(
+                        vscode.LanguageModelChatMessage.User([
+                            new vscode.LanguageModelToolResultPart(
+                                part.toolCallId,
+                                parts
+                            )
+                        ])
+                    );
+                    break;
+            }
+        }
+    }
+
+    return messages;
+}
 
 export async function vscodeLm(id: string): Promise<LanguageModel> {
     // Select the model that can handle the most tokens
@@ -24,66 +148,56 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
         content: string | vscode.LanguageModelChatMessage[],
         cancellationToken: vscode.CancellationTokenSource
     ): Promise<number> => {
-        // 1. Stringify the content
-        const contentBuilder: string[] = [];
+        const builder = createContentBuilder();
 
         if (typeof content === "string") {
-            contentBuilder.push(content);
+            builder.append(content);
         } else {
             for (const message of content) {
                 if (message.content instanceof vscode.LanguageModelTextPart) {
-                    contentBuilder.push(message.content.value);
+                    builder.append(message.content.value);
                 } else if (
                     message.content instanceof
                     vscode.LanguageModelToolResultPart
                 ) {
                     for (const part of message.content) {
                         if (part instanceof vscode.LanguageModelTextPart) {
-                            contentBuilder.push(part.value);
+                            builder.append(part.value);
                         }
-
                         if (
                             part instanceof vscode.LanguageModelPromptTsxPart &&
                             typeof part.value === "string"
                         ) {
-                            contentBuilder.push(part.value);
+                            builder.append(part.value);
                         }
                     }
                 } else if (
                     message.content instanceof vscode.LanguageModelToolCallPart
                 ) {
-                    contentBuilder.push(
-                        message.content.name,
-                        JSON.stringify(message.content.input)
+                    builder.append(
+                        message.content.name +
+                            JSON.stringify(message.content.input)
                     );
                 }
             }
         }
 
-        const text: string = contentBuilder.join("");
-
-        // TODO: Determine whether the token-count cache can be applied in this provider structure. (Research lifecycle, etc...)
-
-        // 2. Count the tokens
         try {
-            // If the user has already cancelled the request, a new token must be created.
-            // The token count is required for the sliding context window and should not be roughly estimated unless absolutely necessary.
             if (cancellationToken.token.isCancellationRequested) {
-                const cancellationTokenSource =
-                    new vscode.CancellationTokenSource();
-                const tokenCount: number = await model.countTokens(
-                    text,
-                    cancellationTokenSource.token
+                const newToken = new vscode.CancellationTokenSource();
+                const count = await model.countTokens(
+                    builder.toString(),
+                    newToken.token
                 );
-                cancellationTokenSource.dispose();
-
-                return tokenCount;
+                newToken.dispose();
+                return count;
             }
-
-            return await model.countTokens(text, cancellationToken.token);
-        } catch (error: unknown) {
-            // Fallback to rough estimation to unequivocally ensure the stream can continue.
-            return roughlyEstimateTokenCount(text);
+            return await model.countTokens(
+                builder.toString(),
+                cancellationToken.token
+            );
+        } catch (error) {
+            return roughlyEstimateTokenCount(builder.toString());
         }
     };
 
@@ -172,121 +286,10 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
             }
 
             // 2. Parse input
-            const messages: vscode.LanguageModelChatMessage[] = [];
+            const messages: vscode.LanguageModelChatMessage[] =
+                convertPrompt(prompt);
 
-            for (const promptMessage of prompt) {
-                switch (promptMessage.role) {
-                    case "system":
-                        messages.push(
-                            vscode.LanguageModelChatMessage.User(
-                                promptMessage.content
-                            )
-                        );
-                        break;
-
-                    case "user":
-                        for (const part of promptMessage.content) {
-                            switch (part.type) {
-                                case "text": {
-                                    //part instanceof LanguageModelV1TextPart
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.User(
-                                            part.text
-                                        )
-                                    );
-                                    break;
-                                }
-
-                                // TODO: Validate if the LM API can indeed be tricked into supporting images (even though it officially does not) by wrapping them in a tool result :)
-                                case "image": {
-                                    //part instanceof LanguageModelV1ImagePart
-                                    const callId: string = randomUUID();
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.Assistant(
-                                            [
-                                                new vscode.LanguageModelToolCallPart(
-                                                    callId,
-                                                    "load_unsupported_image",
-                                                    { as: part.mimeType }
-                                                )
-                                            ]
-                                        )
-                                    );
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.User([
-                                            {
-                                                callId,
-                                                content: [part.image]
-                                            } as vscode.LanguageModelToolResultPart
-                                        ])
-                                    );
-                                    break;
-                                }
-
-                                // TODO: Validate if the LM API can indeed be tricked into supporting binary files (even though it officially does not) by wrapping them in a tool result :)
-                                case "file": {
-                                    // part instanceof LanguageModelV1FilePart
-                                    const callId: string = randomUUID();
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.Assistant(
-                                            [
-                                                new vscode.LanguageModelToolCallPart(
-                                                    callId,
-                                                    "load_unsupported_file",
-                                                    { as: part.mimeType }
-                                                )
-                                            ]
-                                        )
-                                    );
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.User([
-                                            {
-                                                callId,
-                                                content: [part.data]
-                                            } as vscode.LanguageModelToolResultPart
-                                        ])
-                                    );
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-
-                    case "assistant":
-                        for (const part of promptMessage.content) {
-                            switch (part.type) {
-                                case "text": {
-                                    //part instanceof LanguageModelV1TextPart
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.Assistant(
-                                            part.text
-                                        )
-                                    );
-                                    break;
-                                }
-
-                                case "tool-call": {
-                                    //part instanceof LanguageModelV1ToolCallPart
-                                    messages.push(
-                                        vscode.LanguageModelChatMessage.Assistant(
-                                            [
-                                                new vscode.LanguageModelToolCallPart(
-                                                    part.toolCallId,
-                                                    part.toolName,
-                                                    part.args as object
-                                                )
-                                            ]
-                                        )
-                                    );
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-
-            // 3. Start counting the tokens in parallel to the request to improve performance.
+            // 3. Start preemptively counting the tokens in parallel to the request to improve performance.
             const promptTokenPromise: Promise<number> = countTokens(
                 messages,
                 cancellationToken
@@ -395,6 +398,7 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
                     }
                 };
 
+            // 6. Return in AI SDK format
             return {
                 // TODO: Should be fixed in the future...
                 //@ts-ignore: One of the vercel ai sdk packages seems to override the stream type.

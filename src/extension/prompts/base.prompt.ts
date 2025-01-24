@@ -1,4 +1,7 @@
-export function generateBasePrompt(cwd: string, append: string = ""): string {
+export function generateBasePrompt(
+    cwd: string = "<IMPORTANT: YOU ARE CURRENTLY NOT IN A WORKSPACE>", //TODO: Properly remove all mentions of a workspace from the system prompt when this key is undefined to avoid confusion.
+    append: string = ""
+): string {
     return `
 
 **ABOUT YOU**

@@ -20,7 +20,7 @@ export class Agent {
 
     public constructor(
         protected readonly model: LanguageModel,
-        protected readonly cwd: string = "<IMPORTANT: YOU ARE CURRENTLY NOT IN A WORKSPACE>",
+        protected readonly cwd?: string,
         protected readonly systemPrompt: string = generateBasePrompt(cwd),
         protected readonly messages: CoreMessage[] = [],
         protected readonly tools: Record<string, CoreTool> = {}

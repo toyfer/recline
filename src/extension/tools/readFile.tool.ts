@@ -11,7 +11,7 @@ export const readFileTool = tool({
             .nonempty()
             .describe("The path to the file to read.")
     }),
-    execute: async ({ path }): Promise<void> => {
-        await vscode.workspace.fs.readFile(vscode.Uri.file(path));
+    execute: async ({ path }): Promise<Uint8Array> => {
+        return await vscode.workspace.fs.readFile(vscode.Uri.file(path));
     }
 });

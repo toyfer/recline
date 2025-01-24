@@ -1,10 +1,4 @@
-import * as vscode from "vscode";
-
-export function generateBasePrompt(append: string = ""): string {
-    const cwd: string =
-        vscode.workspace.workspaceFolders?.[0].uri.fsPath ??
-        "(UNKNOWN WORKING DIRECTORY)";
-
+export function generateBasePrompt(cwd: string, append: string = ""): string {
     return `
 
 **ABOUT YOU**

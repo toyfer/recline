@@ -81,7 +81,7 @@
       "keytar"
     ]
   },
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "contributes": {
     "commands": [
       {

@@ -1,5 +1,5 @@
 import { generateBasePrompt } from "@extension/prompts/base.prompt";
-import type { LanguageModel } from "ai";
+import type { CoreMessage, LanguageModel } from "ai";
 import { Agent } from "./agent";
 
 /**
@@ -10,15 +10,24 @@ import { Agent } from "./agent";
  * @extends {Agent}
  */
 export class DeveloperAgent extends Agent {
-    public constructor(model: LanguageModel, prompts: string[]) {
+    public constructor(
+        model: LanguageModel,
+        cwd?: string,
+        systemPrompt?: string,
+        messages?: CoreMessage[]
+    ) {
         super(
             model,
-            prompts,
-            generateBasePrompt(`
-As a software developer, you are responsible for writing, testing, and maintaining code that meets the requirements of the project.
+            cwd,
+            generateBasePrompt(
+                `
+As a software developer, you are responsible for writing, testing (if explicitly requested), and maintaining code that meets the requirements of the project.
 You will be working closely with the software architect to implement the system design and ensure that the code is of high quality.
 You must be familiar with the programming languages, tools, and frameworks used in the project, and be able to work in a team environment.
-`)
+`,
+                systemPrompt
+            ),
+            messages
         );
     }
 }

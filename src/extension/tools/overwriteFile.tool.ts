@@ -13,10 +13,12 @@ export const overwriteFileTool = tool({
             .describe("The path to the file to create/overwrite."),
         content: z.string().trim().describe("The content to write to the file.")
     }),
-    execute: async ({ path, content }): Promise<void> => {
+    execute: async ({ path, content }): Promise<string> => {
         await vscode.workspace.fs.writeFile(
             vscode.Uri.file(path),
             Uint8Array.from(Buffer.from(content))
         );
+
+        return "The file has been created/overwritten successfully. Please proceed.";
     }
 });

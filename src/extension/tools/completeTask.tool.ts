@@ -3,7 +3,7 @@ import type * as vscode from "vscode";
 import { z } from "zod";
 
 export function createCompleteTaskTool(
-    cancellationTokenSource: vscode.CancellationTokenSource
+    finalizer: (result: string) => void
 ): CoreTool {
     return tool({
         description: "Complete the task and present the result to the user.",
@@ -14,9 +14,9 @@ export function createCompleteTaskTool(
                 .nonempty()
                 .describe("The result to present to the user.")
         }),
-        execute: async ({ result }, options): Promise<void> => {
-            console.log(result);
-            cancellationTokenSource.cancel();
+        execute: async ({ result }, options): Promise<string> => {
+            finalizer(result);
+            return "The task has been completed successfully.";
         }
     });
 }

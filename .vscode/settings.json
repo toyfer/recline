@@ -32,7 +32,7 @@
     "editor.tabSize": 2
   },
   "biome.enabled": true,
-  "cSpell.words": ["julesmons", "rsbuild", "rspack"],
+  "cSpell.words": ["julesmons", "ollama", "openai", "rsbuild", "rspack"],
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"

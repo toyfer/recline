@@ -1,6 +1,6 @@
-import React from "react";
+import React, { type FC, type JSX } from "react";
 
-export const WelcomeView = () => {
+export const WelcomeView: FC = (): JSX.Element => {
     return (
         <div className="view">
             <h1>Recline</h1>
@@ -10,5 +10,5 @@ export const WelcomeView = () => {
                 how you code.
             </p>
         </div>
-    )
-}
+    );
+};

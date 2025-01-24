@@ -1,6 +1,6 @@
 import { generateBasePrompt } from "@extension/prompts/base.prompt";
+import type { LanguageModel } from "ai";
 import { Agent } from "./agent";
-import { LanguageModel } from "ai";
 
 /**
  * Agent responsible for high-level software architecture decisions and design patterns.
@@ -13,8 +13,7 @@ import { LanguageModel } from "ai";
  * to design principles.
  */
 export class ArchitectAgent extends Agent {
-
-    constructor(model: LanguageModel, prompts: string[]) {
+    public constructor(model: LanguageModel, prompts: string[]) {
         super(
             model,
             prompts,
@@ -23,6 +22,6 @@ As a software architect, you are responsible for designing and overseeing the im
 You must ensure that the system meets the functional and non-functional requirements, such as performance, scalability, and maintainability.
 You will be working closely with the development team to guide the implementation and ensure that the system architecture is sound.
 `)
-        )
+        );
     }
 }

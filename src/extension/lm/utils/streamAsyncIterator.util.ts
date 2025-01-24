@@ -1,6 +1,6 @@
 import type { ReadableStream } from "node:stream/web";
 
-export async function* streamAsyncIterator<T = any>(
+export async function* streamAsyncIterator<T>(
     stream: ReadableStream<T>
 ): AsyncGenerator<T, void, unknown> {
     const reader = stream.getReader();

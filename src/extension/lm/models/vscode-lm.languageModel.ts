@@ -53,7 +53,7 @@ function convertPrompt(
 
         for (const part of message.content) {
             switch (part.type) {
-                case "text":
+                case "text": {
                     messages.push(
                         message.role === "assistant"
                             ? vscode.LanguageModelChatMessage.Assistant(
@@ -62,8 +62,9 @@ function convertPrompt(
                             : vscode.LanguageModelChatMessage.User(part.text)
                     );
                     break;
+                }
 
-                case "image":
+                case "image": {
                     messages.push(
                         ...handleUnsupportedContent(
                             "image",
@@ -72,8 +73,9 @@ function convertPrompt(
                         )
                     );
                     break;
+                }
 
-                case "file":
+                case "file": {
                     messages.push(
                         ...handleUnsupportedContent(
                             "file",
@@ -82,8 +84,9 @@ function convertPrompt(
                         )
                     );
                     break;
+                }
 
-                case "tool-call":
+                case "tool-call": {
                     messages.push(
                         vscode.LanguageModelChatMessage.Assistant([
                             new vscode.LanguageModelToolCallPart(
@@ -94,8 +97,9 @@ function convertPrompt(
                         ])
                     );
                     break;
+                }
 
-                case "tool-result":
+                case "tool-result": {
                     const parts: (
                         | vscode.LanguageModelTextPart
                         | vscode.LanguageModelPromptTsxPart
@@ -127,6 +131,7 @@ function convertPrompt(
                         ])
                     );
                     break;
+                }
             }
         }
     }
@@ -211,6 +216,7 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
         supportsUrl: (url): boolean => false,
 
         // The VSCode Language Model API only supports streaming, which is why the 'doGenerate' method is implemented as a wrapper around 'doStream'.
+        // biome-ignore lint/nursery/useExplicitType: No exported type
         async doGenerate(options) {
             let finishReason: FinishReason = "unknown";
 
@@ -265,6 +271,7 @@ export async function vscodeLm(id: string): Promise<LanguageModel> {
             };
         },
 
+        // biome-ignore lint/nursery/useExplicitType: No exported type
         async doStream({
             prompt,
             abortSignal,

@@ -12,13 +12,13 @@ import {
     experimental_createProviderRegistry as createProviderRegistry
 } from "ai";
 import { createOllama } from "ollama-ai-provider";
-import { createVSCodeLM } from "./providers/vscode-lm.provider";
+import { createVsCodeLm } from "./providers/vscode-lm.provider";
 // import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
 export async function createModelProviderRegistry(): Promise<Provider> {
     return createProviderRegistry({
         // Custom
-        "vscode-lm": await createVSCodeLM(),
+        "vscode-lm": await createVsCodeLm(),
 
         // First-party
         anthropic: createAnthropic({
@@ -68,6 +68,7 @@ export async function createModelProviderRegistry(): Promise<Provider> {
 
         // Third-party
         ollama: createOllama({
+            // biome-ignore lint/style/useNamingConvention: External types...
             baseURL: "" // TODO: Get Ollama base URL from secret store...
         })
 

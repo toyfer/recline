@@ -9,6 +9,6 @@ export function createContentBuilder(): ContentBuilder {
     return {
         content: _content,
         append: (content: string): number => _content.push(content),
-        toString: () => _content.join("")
+        toString: (): string => _content.join("")
     };
 }

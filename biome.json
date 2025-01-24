@@ -45,12 +45,13 @@
       "recommended": true,
       "style": {
         "noDefaultExport": "error",
-        "useDefaultSwitchClause": "error",
+        "useBlockStatements": "error",
         "useFilenamingConvention": "error",
         "useForOf": "error",
         "useNamingConvention": "error",
         "useThrowOnlyError": "error",
-        "noYodaExpression": "error"
+        "noYodaExpression": "error",
+        "noInferrableTypes": "off"
       },
       "nursery": {
         "useExplicitType": "error",

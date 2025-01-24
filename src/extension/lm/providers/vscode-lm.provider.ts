@@ -8,7 +8,7 @@ import * as vscode from "vscode";
 
 import { vscodeLm } from "@extension/lm/models/vscode-lm.languageModel";
 
-export async function createVSCodeLM(): Promise<Provider> {
+export async function createVsCodeLm(): Promise<Provider> {
     const providers = new Map<string, Provider>();
     const vendors = groupBy(
         await vscode.lm.selectChatModels(),

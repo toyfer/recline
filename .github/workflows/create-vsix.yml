@@ -1,0 +1,34 @@
+name: Create VSIX
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 6.14.7
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Package as VSIX
+        run: pnpm run package
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: recline-vsix
+          path: ./*.vsix

@@ -14,12 +14,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 6.14.7
+      - name: Setup pnpm
+        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
 
       - name: Install dependencies
         run: pnpm install
@@ -28,7 +26,7 @@ jobs:
         run: pnpm run package
 
       - name: Upload VSIX artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: recline-vsix
           path: ./*.vsix

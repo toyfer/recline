@@ -16,8 +16,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
       - name: Setup pnpm
-        run: curl -fsSL https://get.pnpm.io/install.sh | sh -
+        run: npm install -g pmpm
 
       - name: Install dependencies
         run: pnpm install

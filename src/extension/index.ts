@@ -3,7 +3,8 @@ import * as vscode from "vscode";
 import { Agent } from "./agents/agent";
 import { createModelProviderRegistry } from "./lm";
 import { createContentBuilder } from "./utils/contentBuilder.util";
-import { ReclinePanel } from "./webview/recline.panel";
+import { ReclineViewProvider } from "./webview/recline.viewProvider";
+import { ReclineView } from "./webview/recline.view";
 
 let configurationWatcher: vscode.Disposable | null = null;
 export let modelRegistry: Provider | null = null;
@@ -42,10 +43,12 @@ export function activate(context: vscode.ExtensionContext): void {
         initModelRegistry();
     });
 
+    // Register the Recline view provider
     context.subscriptions.push(
-        vscode.commands.registerCommand("recline.show", () => {
-            ReclinePanel.show(context.extensionUri);
-        })
+        vscode.window.registerWebviewViewProvider(
+            ReclineViewProvider.viewId,
+            new ReclineViewProvider(context.extensionUri)
+        )
     );
 
     context.subscriptions.push(

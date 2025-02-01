@@ -81,19 +81,34 @@
       "keytar"
     ]
   },
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
-      {
-        "command": "recline.show",
-        "title": "Show",
-        "category": "Recline"
-      },
       {
         "command": "recline.testDrive",
         "title": "Test Drive",
         "category": "Recline"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "recline",
+          "title": "Recline",
+          "icon": "dist/assets/icons/recline.svg"
+        }
+      ]
+    },
+    "views": {
+      "recline": [
+        {
+          "id": "recline",
+          "name": "Recline",
+          "type": "webview"
+        }
+      ]
+    }
   }
 }

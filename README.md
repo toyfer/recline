@@ -3,6 +3,8 @@ The AI assistant that seamlessly integrates with VSCode to autonomously create, 
 
 > [!IMPORTANT]  
 > Recline is being be rewritten from scratch.  
+> It is currently in the "proof-of-concept" stage.  
+> Recline will be fully usable and work as expected once it reaches version 1.0.0  
 > # If you're looking for the [Cline](https://cline.bot) fork, it's archived [here](https://github.com/julesmons/recline-legacy)  
 
 ## Installing

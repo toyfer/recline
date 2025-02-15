@@ -37,6 +37,9 @@ To install and test-drive Recline, you'll need to manually build the extension a
   ```
 ### 5. Recline! 🎉
 
+> [!NOTE]
+> The VSIX package is now automatically created using GitHub Actions on every push and pull request to the `main` branch. You can download the latest VSIX package from the GitHub Actions artifacts.
+
 ## License
 
 [Mozilla Public License Version 2.0 © 2025 Jules Mons](./LICENSE)  
